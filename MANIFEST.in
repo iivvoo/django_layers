@@ -1,0 +1,6 @@
+include *.txt
+
+recursive-include docs *
+recursive-include layers *
+
+global-exclude *.pyc

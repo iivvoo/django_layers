@@ -1,0 +1,32 @@
+from setuptools import setup, find_packages
+import os
+
+version = '0.7.1'
+
+setup(name='layers',
+      version=version,
+      description="Dynamically adjust the django template search path",
+      long_description=open("README.md").read(),
+      # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=[
+        "Programming Language :: Python",
+        ],
+      keywords='',
+      author='Ivo van der Wijk',
+      author_email='djangoprojects@in.m3r.nl',
+      url='http://github.com/iivvoo/django_layers.test',
+      license='BSD',
+      packages=find_packages(exclude=['ez_setup']),
+      namespace_packages=[],
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=[
+          'setuptools',
+          'pytest',
+          'twotest',
+      ],
+      entry_points={
+      },
+
+      )
+
