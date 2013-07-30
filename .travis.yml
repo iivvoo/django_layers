@@ -1,0 +1,16 @@
+language: python
+python:
+  - "2.7"
+  - "2.6"
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+env:
+  - DJANGO_VERSION=Django==1.4.5
+  - DJANGO_VERSION=Django==1.5.1
+install:
+    - pip install -q --use-mirrors argparse
+    - pip install -q --use-mirrors $DJANGO_VERSION
+    - pip install -q --use-mirrors -r requirements.txt
+    - python setup.py install -q
+# command to run tests, e.g. python setup.py test
+script:
+    - python quicktest.py
