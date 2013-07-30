@@ -3,7 +3,7 @@ import os
 
 version = '0.7.1'
 
-setup(name='layers',
+setup(name='django_layers',
       version=version,
       description="Dynamically adjust the django template search path",
       long_description=open("README.md").read(),
