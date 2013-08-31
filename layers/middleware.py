@@ -31,10 +31,10 @@ for app in settings.INSTALLED_APPS:
     except (ImportError, AttributeError):
         pass  # don't care
 
-from layers.loader import app_layers_funcs
 
 def get_active_layer(request):
     """ return the first layer func result that is not false """
+    from layers.loader import app_layers_funcs
     for f in app_layers_funcs:
         prefix = f(request)
         if prefix:
