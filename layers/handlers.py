@@ -5,7 +5,7 @@ from .middleware import _thread_locals
 class LayeredStaticFilesHandler(StaticFilesHandler):
     def serve(self, request):
         """
-        Actually serves the request path.
+            Store a reference to the request object
         """
         _thread_locals.request = request
 
