@@ -45,23 +45,21 @@ class AppLayerFinder(BaseFinder):
                     self.storages[app][layer] = app_storage
         super(AppLayerFinder, self).__init__(*args, **kwargs)
 
-    def find(self, path, all=False):
+    def find(self, path, all=False, layer=None):
         """
         Looks for files in the app directories.
         """
         matches = []
         for app in self.apps:
-            match = self.find_in_app(app, path)
+            match = self.find_in_app(app, path, layer)
             if match:
                 if not all:
                     return match
                 matches.append(match)
         return matches
 
-    def find_in_app(self, app, path):
-        # import pdb; pdb.set_trace()
-        
-        layer = get_active_layer(get_current_request())
+    def find_in_app(self, app, path, layer=None):
+        layer = layer or get_active_layer(get_current_request())
         storage = self.storages.get(app, {}).get(layer, None)
         if storage:
             if layer:

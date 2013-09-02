@@ -10,4 +10,6 @@ if __name__ == '__main__':
         ROOT_URLCONF="",
         USE_TZ=True,
         STATIC_URL='/',
+        LAYERS=dict(test='/static/test',
+                    test2='/static/test2')
     )
