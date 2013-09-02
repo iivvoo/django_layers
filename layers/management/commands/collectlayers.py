@@ -16,19 +16,21 @@ from django.contrib.staticfiles import finders
 
 class Command(BaseCommand):
     """
-        voor iedere layer
-        stel settings STATIC_ROOT in op layer's root
-        roep commando aan
+        Do a 'collectstatic' for each LAYER definde in the settings
+        (or default to collectstatic behaviour)
+
+        This, unfortunately, means copy / repeating some original collectstatic
+        code.
     """
     option_list = BaseCommand.option_list
 
     def __init__(self, *args, **kwargs):
+        """ Make sure there's always a self.layer """
         self.layer = ""
         super(Command, self).__init__(*args, **kwargs)
 
     def handle_noargs(self, **options):
-        self.opts = options
-
+        """ Handle the invocation similarly to collectstatic """
         self.set_options(**options)
         # Warn before doing anything more.
         if (isinstance(self.storage, FileSystemStorage) and
@@ -63,6 +65,7 @@ Type 'yes' to continue, or 'no' to cancel: """
         unmodified_count = 0
         post_processed_count = 0
 
+        ## .. but iterate over the layers
         if layers:
             for layer, path in layers.iteritems():
                 collected= self.invoke_collect(layer, path)
@@ -94,6 +97,9 @@ Type 'yes' to continue, or 'no' to cancel: """
             self.stdout.write(smart_str(summary))
 
     def invoke_collect(self, layer, path):
+        """ Invoke collect, reset all instance storage first and initialize
+            a self.storage that's bound to the layers target STATIC_ROOT
+        """
         self.stdout.write("Collecting layer %s to path %s\n" % (layer, path))
         self.storage = StaticFilesStorage(path)
         try:
@@ -112,9 +118,8 @@ Type 'yes' to continue, or 'no' to cancel: """
 
     def collect(self):
         """
-        Perform the bulk of the work of collectstatic.
-
-        Split off from handle_noargs() to facilitate testing.
+            Copied from collectstatic's Command.collect() with a tiny
+            storage-layer check ..
         """
         if self.symlink:
             if sys.platform == 'win32':
@@ -134,7 +139,7 @@ Type 'yes' to continue, or 'no' to cancel: """
         found_files = SortedDict()
         for finder in finders.get_finders():
             for path, storage in finder.list(self.ignore_patterns):
-                ## is the storage part of the current layer?
+                ## .. is the storage part of the current layer?
                 if hasattr(storage, 'layer') and storage.layer != self.layer:
                     continue
 
