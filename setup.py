@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.7.2'
+version = '0.8'
 
 setup(name='django_layers',
       version=version,
-      description="Dynamically adjust the django template search path",
+      description="Support different frontend templates/statics on same instance",
       long_description=open("README.md").read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
