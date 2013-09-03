@@ -60,13 +60,13 @@ Now you can start using layers.
 
 Create the same templates as before but in stead (or on top of) storing them
 in your package's templates folder, store them in a folder called 
-'layers/<layername>/templates'.
+'layers/**layername**/templates'.
 
 E.g. you could have
 
-mypackage/templates/mypackage/foo.html
-mypackage/layers/visitor-a/templates/mypackage/foo.html
-mypackage/layers/visitor-b/templates/mypackage/foo.html
+    mypackage/templates/mypackage/foo.html
+    mypackage/layers/visitor-a/templates/mypackage/foo.html
+    mypackage/layers/visitor-b/templates/mypackage/foo.html
 
 This creates two layers, "visitor-a" and "visitor-b" and a fallback if no
 layer is selected.
@@ -114,15 +114,18 @@ You can then access the current layer's configuration using 'get_current_layer':
         layer = get_current_layer()
         return SomeModel.objects.filter(site_id=layer['site_id'])
 
+django_layers will scan all your packages for configuration and merge the
+configuration dictionaries together if necessary.
+
 Static resources per layer
 --------------------------
 
 You can store your per-layer statics in any app installed in your application
-in the layers/<layer>/<layername>/statics folder, e.g. you could have
+in the layers/**layer**/**layername**/statics folder, e.g. you could have
 
-mypackage/static/css/foo.css
-mypackage/layers/visitor-a/static/css/foo.css
-mypackage/layers/visitor-b/static/css/foo.css
+    mypackage/static/css/foo.css
+    mypackage/layers/visitor-a/static/css/foo.css
+    mypackage/layers/visitor-b/static/css/foo.css
 
 A request for /static/css/foo.css will result in visitor-a/static/css/foo.css
 if the visitor-a layer is active, it will result in visitor-b/static/css/foo.css
@@ -132,9 +135,9 @@ if the visitor-b layer is active or in mypackage/static/css/foo.css otherwise.
 Static resources are served by the django 'runserver' command or by a webserver
 running in front of your application.
 
-django_layers provides an upgraded 'runserver' command that knows which static
+django_layers provides an upgraded `runserver` command that knows which static
 resources to serve depending on the active layer. It also comes with a 
-'collectlayers' command that collects the layers into distinct staticfolders,
+`collectlayers` command that collects the layers into distinct staticfolders,
 similar to how 'collectstatic' works. Which layer is collected where is defined
 by the 'LAYERS' settings.py setting.
 
