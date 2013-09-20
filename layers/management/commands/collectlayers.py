@@ -12,7 +12,7 @@ from django.conf import settings
 from django.utils.encoding import smart_str
 from django.contrib.staticfiles import finders
 
-
+from layers.finders import AppLayerFinder
 
 class Command(BaseCommand):
     """
@@ -138,7 +138,12 @@ Type 'yes' to continue, or 'no' to cancel: """
 
         found_files = SortedDict()
         for finder in finders.get_finders():
-            for path, storage in finder.list(self.ignore_patterns):
+            if isinstance(finder, AppLayerFinder):
+                lister = lambda: finder.list(self.ignore_patterns, self.layer)
+            else:
+                lister = lambda: finder.list(self.ignore_patterns)
+
+            for path, storage in lister():
                 ## .. is the storage part of the current layer?
                 if hasattr(storage, 'layer') and storage.layer != self.layer:
                     continue

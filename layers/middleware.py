@@ -24,14 +24,20 @@ def store_conf_from_module(mod):
 
         layer_confs[k].update(v)
 
-for app in settings.INSTALLED_APPS:
+def load_conf(app, module):
     try:
-        mod = import_module(app + ".layers")
+        mod = import_module(app + "." + module)
 
         if hasattr(mod, 'get_config') and callable(mod.get_config):
             store_conf_from_module(mod)
     except (ImportError, AttributeError):
         pass  # don't care
+
+for app in settings.INSTALLED_APPS:
+    ## "layers" turned out to be a poor module name since it's the
+    ## same as this package!
+    load_conf(app, "layers")
+    load_conf(app, "select_layer")
 
 
 def get_active_layer(request, layer_funcs=None):
@@ -46,4 +52,3 @@ class LayerLoaderMiddleware(object):
     def process_request(self, request):
         _thread_locals.request = request
         _thread_locals.layer = layer_confs.get(get_active_layer(request))
-

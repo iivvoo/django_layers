@@ -68,11 +68,12 @@ class AppLayerFinder(BaseFinder):
                     if matched_path:
                         return matched_path
 
-    def list(self, ignore_patterns):
+    def list(self, ignore_patterns, layer=None):
         """
         List all files in all app storages.
         """
-        layer = "sbo_nl" ## somehow get this..
+        if not layer:
+            return
 
         for storage in self.storages.itervalues():
             layer_storage = storage.get(layer, None)

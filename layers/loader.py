@@ -43,28 +43,34 @@ app_layers_dirs = tuple(app_layers_dirs)
 """
     Resolve the callable that resolves the layer to be activated, if any
 """
-app_layers_funcs = []
-for app in settings.INSTALLED_APPS:
+def load_conf(app, module):
     try:
-        mod = import_module(app + ".layers")
+        mod = import_module(app + "." + module)
 
         if callable(mod.get_layer):
             app_layers_funcs.append(mod.get_layer)
     except (ImportError, AttributeError):
         pass  # don't care
 
+app_layers_funcs = []
+for app in settings.INSTALLED_APPS:
+    load_conf(app, "layers")
+    load_conf(app, "select_layer")
+
 app_layers_funcs = tuple(app_layers_funcs)
 
 class LayerLoader(BaseLoader):
     def load_template_source(self, template_name, layers_dirs=None, templates_dirs=None, layers_funcs=None):
-        #if template_name.endswith("reserveren.html"):
-        #    import pdb; pdb.set_trace()
 
         request = get_current_request()
         layers_dirs = layers_dirs or app_layers_dirs
         templates_dirs = templates_dirs or app_templates_dirs
         layers_funcs = layers_funcs or app_layers_funcs
 
+        # if request and template_name == "base.html":
+        #    import pdb; pdb.set_trace()
+            
+        
         for f in layers_funcs:
             ## optimization: check if we didn't already try this prefix in a previous iteration
             prefix = f(request)
