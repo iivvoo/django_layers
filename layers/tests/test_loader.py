@@ -4,6 +4,21 @@ from django.template.base import TemplateDoesNotExist
 
 from layers.loader import LayerLoader
 
+class TestOldstyleLoader(object):
+    """ layers can also be in <pkg>/templates/<layer> """
+    def test_simpelmatch(self):
+        """ Simple case, direct match """
+        loader = LayerLoader()
+        f = lambda x: 'test'
+
+        import pkg1
+        path = os.path.join(os.path.dirname(pkg1.__file__ ), 'templates')
+
+        tpl, tplpath = loader.load_template_source("oldstyle.html",
+                                                   templates_dirs=[path], 
+                                                   layers_funcs=[f])
+        assert tplpath == os.path.join(path, "test", "oldstyle.html")
+
 class TestLoader(object):
     def test_nothing(self):
         """ no templates hence DoesNotExist """
@@ -22,7 +37,7 @@ class TestLoader(object):
         tpl, tplpath = loader.load_template_source("test.html",
                                                    layers_dirs=[path], 
                                                    layers_funcs=[f])
-        assert tplpath == os.path.join(path, "test", "test.html")
+        assert tplpath == os.path.join(path, "test", "templates", "test.html")
 
     def test_complexmatch(self):
         """ two failing layer funcs followed by success """
@@ -38,7 +53,7 @@ class TestLoader(object):
                                                    layers_dirs=[path], 
                                                    layers_funcs=[notexist,
                                                                  nomatch, match])
-        assert tplpath == os.path.join(path, "test", "test.html")
+        assert tplpath == os.path.join(path, "test", "templates", "test.html")
 
     def test_order(self):
         """ multiple matching paths """
@@ -52,7 +67,7 @@ class TestLoader(object):
         tpl, tplpath = loader.load_template_source("test.html",
                                                    layers_dirs=[path1, path2], 
                                                    layers_funcs=[match])
-        assert tplpath == os.path.join(path1, "test", "test.html")
+        assert tplpath == os.path.join(path1, "test", "templates", "test.html")
 
     def test_order2(self):
         """ multiple matching paths, first fails """
@@ -66,4 +81,4 @@ class TestLoader(object):
         tpl, tplpath = loader.load_template_source("test2.html",
                                                    layers_dirs=[path1, path2], 
                                                    layers_funcs=[match])
-        assert tplpath == os.path.join(path2, "test", "test2.html")
+        assert tplpath == os.path.join(path2, "test", "templates", "test2.html")
