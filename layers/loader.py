@@ -4,7 +4,6 @@ import sys
 from django.template.base import TemplateDoesNotExist
 from django.template.loaders.app_directories import Loader as BaseLoader
 from django.conf import settings
-from layers.middleware import get_current_request
 from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 
@@ -48,6 +47,7 @@ app_layers_funcs = tuple(app_layers_funcs)
     
 class LayerLoader(BaseLoader):
     def load_template_source(self, template_name, layers_dirs=None, layers_funcs=None):
+        from layers.middleware import get_current_request
         request = get_current_request()
         layers_dirs = layers_dirs or app_layers_dirs
         layers_funcs = layers_funcs or app_layers_funcs
