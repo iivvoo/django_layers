@@ -31,11 +31,13 @@ MIDDLEWARE_CLASSES, e.g.
         ...
     )
 
-Also, add 'layers.loader.LayerLoader' to your TEMPLATE_LOADERS, e.g.
+Also, add 'layers.loader.LayerLoader' at the top of your TEMPLATE_LOADERS, prior
+to any other/django loaders. E.g.
 
     TEMPLATE_LOADERS = (
         'layers.loader.LayerLoader',
-        ...
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
     )
 
 Optionally, if you have separate collections of static resources for each layer,
