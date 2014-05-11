@@ -66,10 +66,6 @@ class LayerLoader(BaseLoader):
         templates_dirs = templates_dirs or app_templates_dirs
         layers_funcs = layers_funcs or app_layers_funcs
 
-        # if request and template_name == "base.html":
-        #    import pdb; pdb.set_trace()
-            
-        
         for f in layers_funcs:
             ## optimization: check if we didn't already try this prefix in a previous iteration
             prefix = f(request)
