@@ -1,6 +1,10 @@
 django layers
 =============
 
+![Build status](https://travis-ci.org/iivvoo/django_layers.png)
+[![Coverage Status](https://coveralls.io/repos/iivvoo/django_layers/badge.png?branch=master)](https://coveralls.io/r/iivvoo/django_layers?branch=master)
+
+
 This package provides support for "layers" of templates and static resources
 that can be selecting depending on the request context.
 
