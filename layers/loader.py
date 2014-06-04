@@ -63,9 +63,6 @@ class LayerLoader(BaseLoader):
         from layers.middleware import get_current_request
         request = get_current_request()
 
-        if not request:
-            raise TemplateDoesNotExist(template_name)
-
         layers_dirs = layers_dirs or app_layers_dirs
         templates_dirs = templates_dirs or app_templates_dirs
         layers_funcs = layers_funcs or app_layers_funcs
