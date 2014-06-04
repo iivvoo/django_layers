@@ -63,6 +63,10 @@ class LayerLoader(BaseLoader):
     def load_template_source(self, template_name, layers_dirs=None, templates_dirs=None, layers_funcs=None):
 
         request = get_current_request()
+
+        if not request:
+            raise TemplateDoesNotExist(template_name)
+
         layers_dirs = layers_dirs or app_layers_dirs
         templates_dirs = templates_dirs or app_templates_dirs
         layers_funcs = layers_funcs or app_layers_funcs
