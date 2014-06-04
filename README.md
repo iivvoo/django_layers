@@ -1,6 +1,10 @@
 django layers
 =============
 
+![Build status](https://travis-ci.org/iivvoo/django_layers.png)
+[![Coverage Status](https://coveralls.io/repos/iivvoo/django_layers/badge.png?branch=master)](https://coveralls.io/r/iivvoo/django_layers?branch=master)
+
+
 This package provides support for "layers" of templates and static resources
 that can be selecting depending on the request context.
 
@@ -31,11 +35,13 @@ MIDDLEWARE_CLASSES, e.g.
         ...
     )
 
-Also, add 'layers.loader.LayerLoader' to your TEMPLATE_LOADERS, e.g.
+Also, add 'layers.loader.LayerLoader' at the top of your TEMPLATE_LOADERS, prior
+to any other/django loaders. E.g.
 
     TEMPLATE_LOADERS = (
         'layers.loader.LayerLoader',
-        ...
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
     )
 
 Optionally, if you have separate collections of static resources for each layer,

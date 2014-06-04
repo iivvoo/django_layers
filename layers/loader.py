@@ -4,7 +4,6 @@ import sys
 from django.template.base import TemplateDoesNotExist
 from django.template.loaders.app_directories import Loader as BaseLoader
 from django.conf import settings
-from layers.middleware import get_current_request
 from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 
@@ -61,7 +60,7 @@ app_layers_funcs = tuple(app_layers_funcs)
 
 class LayerLoader(BaseLoader):
     def load_template_source(self, template_name, layers_dirs=None, templates_dirs=None, layers_funcs=None):
-
+        from layers.middleware import get_current_request
         request = get_current_request()
 
         if not request:
@@ -71,10 +70,6 @@ class LayerLoader(BaseLoader):
         templates_dirs = templates_dirs or app_templates_dirs
         layers_funcs = layers_funcs or app_layers_funcs
 
-        # if request and template_name == "base.html":
-        #    import pdb; pdb.set_trace()
-            
-        
         for f in layers_funcs:
             ## optimization: check if we didn't already try this prefix in a previous iteration
             prefix = f(request)
