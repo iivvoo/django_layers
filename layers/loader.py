@@ -1,10 +1,10 @@
 import os
 import sys
+from importlib import import_module
 
-from django.template.base import TemplateDoesNotExist
+from django.template import TemplateDoesNotExist
 from django.template.loaders.app_directories import Loader as BaseLoader
 from django.conf import settings
-from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 
 
