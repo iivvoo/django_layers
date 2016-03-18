@@ -3,7 +3,7 @@ try:
 except ImportError:
     from django.utils._threading_local import local
 
-from django.utils.importlib import import_module
+from importlib import import_module
 from django.conf import settings
 
 _thread_locals = local()
