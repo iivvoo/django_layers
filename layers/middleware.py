@@ -2,8 +2,10 @@ try:
     from threading import local
 except ImportError:
     from django.utils._threading_local import local
-
-from django.utils.importlib import import_module
+try:
+    from importlib import import_module
+except ImportError:
+    from django.utils.importlib import import_module
 from django.conf import settings
 
 _thread_locals = local()
