@@ -1,16 +1,13 @@
-import os
-import sys
+import os, sys
+from collections import OrderedDict
 
-from django.utils.datastructures import SortedDict
-
-from django.contrib.staticfiles.management.commands.collectstatic import Command as BaseCommand
-from django.core.files.storage import FileSystemStorage
-
-from django.contrib.staticfiles.storage import StaticFilesStorage
-from django.core.management.base import CommandError
 from django.conf import settings
-from django.utils.encoding import smart_str
 from django.contrib.staticfiles import finders
+from django.contrib.staticfiles.management.commands.collectstatic import Command as BaseCommand
+from django.contrib.staticfiles.storage import StaticFilesStorage
+from django.core.files.storage import FileSystemStorage
+from django.core.management.base import CommandError
+from django.utils.encoding import smart_str
 
 from layers.finders import AppLayerFinder
 
@@ -136,7 +133,7 @@ Type 'yes' to continue, or 'no' to cancel: """
         else:
             handler = self.copy_file
 
-        found_files = SortedDict()
+        found_files = OrderedDict()
         for finder in finders.get_finders():
             if isinstance(finder, AppLayerFinder):
                 lister = lambda: finder.list(self.ignore_patterns, self.layer)
