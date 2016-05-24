@@ -1,0 +1,4 @@
+*.pyc
+build*
+dist*
+django_layers.egg-info*
