@@ -1,17 +1,20 @@
 import os
+from collections import OrderedDict
 
 from django.contrib.staticfiles.finders import BaseFinder
-from django.contrib.staticfiles.storage import AppStaticStorage
+from django.contrib.staticfiles.storage import StaticFilesStorage 
 from django.contrib.staticfiles import utils
-from django.utils.datastructures import SortedDict
-from django.utils.importlib import import_module
-
-
 from django.conf import settings
+
+try:
+    from importlib import import_module
+except ImportError:
+    from django.utils.importlib import import_module
 
 from .middleware import get_current_request, get_active_layer
 
-class LayerStaticStorage(AppStaticStorage):
+
+class LayerStaticStorage(StaticFilesStorage):
     def __init__(self, app, layer, *args, **kwargs):
         """
         Returns a static file storage if available in the given app.
@@ -21,7 +24,7 @@ class LayerStaticStorage(AppStaticStorage):
         mod = import_module(app)
         mod_path = os.path.dirname(mod.__file__)
         location = os.path.join(mod_path, "layers", layer, 'static')
-        super(AppStaticStorage, self).__init__(location, *args, **kwargs)
+        super(StaticFilesStorage, self).__init__(location, *args, **kwargs)
 
 
 class AppLayerFinder(BaseFinder):
@@ -30,7 +33,7 @@ class AppLayerFinder(BaseFinder):
     def __init__(self, apps=None, *args, **kwargs):
         layers = getattr(settings, "LAYERS", {})
         self.apps = []
-        self.storages = SortedDict()
+        self.storages = OrderedDict()
         if apps is None:
             apps = settings.INSTALLED_APPS
         for app in apps:
