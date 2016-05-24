@@ -1,17 +1,17 @@
 import os
 
 from django.contrib.staticfiles.finders import BaseFinder
-from django.contrib.staticfiles.storage import AppStaticStorage
+from django.contrib.staticfiles.storage import StaticFilesStorage 
 from django.contrib.staticfiles import utils
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
-
 
 from django.conf import settings
 
 from .middleware import get_current_request, get_active_layer
 
-class LayerStaticStorage(AppStaticStorage):
+
+class LayerStaticStorage(StaticFilesStorage):
     def __init__(self, app, layer, *args, **kwargs):
         """
         Returns a static file storage if available in the given app.
@@ -21,7 +21,7 @@ class LayerStaticStorage(AppStaticStorage):
         mod = import_module(app)
         mod_path = os.path.dirname(mod.__file__)
         location = os.path.join(mod_path, "layers", layer, 'static')
-        super(AppStaticStorage, self).__init__(location, *args, **kwargs)
+        super(StaticFilesStorage, self).__init__(location, *args, **kwargs)
 
 
 class AppLayerFinder(BaseFinder):
