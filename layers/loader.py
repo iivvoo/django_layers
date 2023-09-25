@@ -10,6 +10,7 @@ from django.template import TemplateDoesNotExist
 from django.template.loaders.app_directories import Loader as BaseLoader
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.template.utils import get_app_template_dirs
 
 
 # taken from / inspired by django.template.loaders.app_directories
@@ -60,32 +61,44 @@ for app in settings.INSTALLED_APPS:
 
 app_layers_funcs = tuple(app_layers_funcs)
 
+
 class LayerLoader(BaseLoader):
-    def load_template_source(self, template_name, layers_dirs=None, templates_dirs=None, layers_funcs=None):
+
+    def get_dirs(self):
         from layers.middleware import get_current_request
         request = get_current_request()
-
-        layers_dirs = layers_dirs or app_layers_dirs
-        templates_dirs = templates_dirs or app_templates_dirs
-        layers_funcs = layers_funcs or app_layers_funcs
-
-        for f in layers_funcs:
-            ## optimization: check if we didn't already try this prefix in a previous iteration
+        dirs = tuple()
+        for f in app_layers_funcs:
             prefix = f(request)
-
             if prefix:
-                if layers_dirs:
-                    for filepath in self.get_template_sources(os.path.join(prefix, "templates", template_name), layers_dirs):
-                        try:
-                            with open(filepath, 'rb') as fp:
-                                return (fp.read().decode(settings.FILE_CHARSET), filepath)
-                        except IOError:
-                            pass
-                if templates_dirs:
-                    for filepath in self.get_template_sources(os.path.join(prefix, template_name), templates_dirs):
-                        try:
-                            with open(filepath, 'rb') as fp:
-                                return (fp.read().decode(settings.FILE_CHARSET), filepath)
-                        except IOError:
-                            pass
-        raise TemplateDoesNotExist(template_name)
+                dirs = dirs + get_app_template_dirs(os.path.join("layers", prefix, "templates"))
+        return dirs
+
+    # def load_template_source(self, template_name, layers_dirs=None, templates_dirs=None, layers_funcs=None):
+    #     from layers.middleware import get_current_request
+    #     request = get_current_request()
+
+    #     layers_dirs = layers_dirs or app_layers_dirs
+    #     templates_dirs = templates_dirs or app_templates_dirs
+    #     layers_funcs = layers_funcs or app_layers_funcs
+
+    #     for f in layers_funcs:
+    #         ## optimization: check if we didn't already try this prefix in a previous iteration
+    #         prefix = f(request)
+
+    #         if prefix:
+    #             if layers_dirs:
+    #                 for filepath in self.get_template_sources(os.path.join(prefix, "templates", template_name), layers_dirs):
+    #                     try:
+    #                         with open(filepath, 'rb') as fp:
+    #                             return (fp.read().decode(settings.FILE_CHARSET), filepath)
+    #                     except IOError:
+    #                         pass
+    #             if templates_dirs:
+    #                 for filepath in self.get_template_sources(os.path.join(prefix, template_name), templates_dirs):
+    #                     try:
+    #                         with open(filepath, 'rb') as fp:
+    #                             return (fp.read().decode(settings.FILE_CHARSET), filepath)
+    #                     except IOError:
+    #                         pass
+    #     raise TemplateDoesNotExist(template_name)
