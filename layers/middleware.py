@@ -7,6 +7,7 @@ try:
 except ImportError:
     from django.utils.importlib import import_module
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 
 _thread_locals = local()
 
@@ -50,7 +51,7 @@ def get_active_layer(request, layer_funcs=None):
         if prefix:
             return prefix
 
-class LayerLoaderMiddleware(object):
+class LayerLoaderMiddleware(MiddlewareMixin):
     def process_request(self, request):
         _thread_locals.request = request
         _thread_locals.layer = layer_confs.get(get_active_layer(request))
